@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Login - Ignite Cardápio</title>
+    <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="css/style.css" />
+  <!-- Font Awesome alternativo (substituindo o kit que está com erro) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- SweetAlert2 -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <!-- Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  
+  
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center p-4">
+
+  <div class="container" id="container">
+    <div class="forms-container">
+      <div class="signin-signup">
+        <form class="sign-in-form" id="login-form">
+          <h2 class="title">Entrar</h2>
+          <div class="input-field">
+            <i class="fas fa-envelope"></i>
+            <input type="email" id="login-email" placeholder="E-mail" required />
+          </div>
+          <div class="input-field">
+            <i class="fas fa-lock"></i>
+            <input type="password" id="login-password" placeholder="Senha" required />
+          </div>
+          <button type="submit" class="btn solid">Entrar</button>
+          <p class="social-text">Ignite Restaurante</p>
+          <div class="social-login">
+            <div class="social-btn" id="google-login">
+              <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTgiIGhlaWdodD0iMTgiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGcgZmlsbD0ibm9uZSIgZmlsbC1ydWxlPSJldmVub2RkIj48cGF0aCBkPSJNMTcuNiA5LjJsLS4xLTEuOEg5djMuNGg0LjhDMTMuNiAxMCAxMyAxMyAxMiAxMy42djIuMmgzYTguOCA4LjggMCAwIDAgMi42LTYuNnoiIGZpbGw9IiM0Mjg1RjQiIGZpbGwtcnVsZT0ibm9uemVybyIvPjxwYXRoIGQ9Ik05IDE4YzIuNCAwIDQuNS0uOCA2LTIuMmwtMy0yLjJhNS40IDUuNCAwIDAgMS04LTIuOUgxVjEzYTkgOSAwIDAgMCA4IDV6IiBmaWxsPSIjMzRBODUzIiBmaWxsLXJ1bGU9Im5vbnplcm8iLz48cGF0aCBkPSJNNCAxMC43YTUuNCA1LjQgMCAwIDEgMC0zLjRWNUgxYTkgOSAwIDAgMCAwIDhsMy0yLjN6IiBmaWxsPSIjRkJCQzA1IiBmaWxsLXJ1bGU9Im5vbnplcm8iLz48cGF0aCBkPSJNOTMgMy42YzEuMyAwIDIuNS40IDMuNCAxLjNMMTUgMi4zQTkgOSAwIDAgMCAxIDVsMyAyLjRhNS40IDUuNCAwIDAgMSA1LTMuN3oiIGZpbGw9IiNFQTQzMzUiIGZpbGwtcnVsZT0ibm9uemVybyIvPjxwYXRoIGQ9Ik0wIDBoMTh2MThIMHoiLz48L2c+PC9zdmc+" alt="Google">
+            </div>
+            <div class="social-btn" id="github-login">
+              <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTgiIGhlaWdodD0iMTgiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZmlsbD0iIzIzMUYyMCIgZD0iTTcuOTk5IDBDMy41ODIgMCAwIDMuNTg0IDAgOC4wMDFjMCAzLjU0IDIuMjk2IDYuNTQ3IDUuNDc3IDcuNTk1LjQuMDc1LjU0OC0uMTc1LjU0OC0uMzg1IDAtLjE5LS4wMDctLjgyOC0uMDExLTEuNTktMi4yMjYuNDg2LTIuNzA1LTEuMDctMi43MDUtMS4wNy0uMzY1LS45MjUtLjg5LTEuMTctLjg5LTEuMTctLjcyOC0uNS4wNTUtLjQ5LjA1NS0uNDkuNzIuMDU1IDEuMTA1LjczOCAxLjEwNS43MzguNzE1IDEuMjI1IDEuODc1Ljg3IDIuMzI1LjY2NS4wNzUtLjUyNS4yOC0uODcuNTA1LTEuMDctMS43NzUtLjItMy42NS0uODktMy42NS0zLjk1IDAtLjg3NS4zMS0xLjU5LjgyNS0yLjE1LS4wOC0uMi0uMzYtMS4wMi4wNzUtMi4xMiAwIDAgLjY3NS0uMjE1IDIuMi44Mi42NC0uMTggMS4zLS4yNyAyLS4yNy43IDAgMS40LjA5IDIuMDA1LjI3IDEuNTI1LTEuMDM1IDIuMTc1LS44MiAyLjE3NS0uODIuNDQgMS4xLjE1NSAxLjkyLjA3NSAyLjEyLjUxNS41Ni44MiAxLjI3NS44MiAyLjE1IDAgMy4wNzUtMS44NzUgMy44NS0zLjY1IDMuOTUuMjguMjUuNTQuNzUuNTQgMS41MiAwIDEuMS0uMDEgMS45OC0uMDEgMi4yNSAwIC4yMS4xNDUuQTEuMDAxIDEuMDAxIDAgMCAwIDE2IDguMDAxQzE2IDMuNTg0IDEyLjQxOCAwIDcuOTk5IDB6Ii8+PC9zdmc+" alt="GitHub">
+            </div>
+          </div>
+        </form>
+
+        <form class="sign-up-form" id="register-form">
+          <h2 class="title">Cadastrar</h2>
+          <div class="input-field">
+            <i class="fas fa-user"></i>
+            <input type="text" id="register-name" placeholder="Nome completo" required />
+          </div>
+          <div class="input-field">
+            <i class="fas fa-envelope"></i>
+            <input type="email" id="register-email" placeholder="E-mail" required />
+          </div>
+          <div class="input-field">
+            <i class="fas fa-lock"></i>
+            <input type="password" id="register-password" placeholder="Senha" required />
+          </div>
+          <button type="submit" class="btn">Cadastrar</button>
+          <p class="social-text">Plataforma Ignite Restaurante</p>
+          <div class="social-login">
+            <div class="social-btn" id="google-register">
+              <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTgiIGhlaWdodD0iMTgiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGcgZmlsbD0ibm9uZSIgZmlsbC1ydWxlPSJldmVub2RkIj48cGF0aCBkPSJNMTcuNiA5LjJsLS4xLTEuOEg5djMuNGg0LjhDMTMuNiAxMCAxMyAxMyAxMiAxMy42djIuMmgzYTguOCA4LjggMCAwIDAgMi42LTYuNnoiIGZpbGw9IiM0Mjg1RjQiIGZpbGwtcnVsZT0ibm9uemVybyIvPjxwYXRoIGQ9Ik05IDE4YzIuNCAwIDQuNS0uOCA2LTIuMmwtMy0yLjJhNS40IDUuNCAwIDAgMS04LTIuOUgxVjEzYTkgOSAwIDAgMCA4IDV6IiBmaWxsPSIjMzRBODUzIiBmaWxsLXJ1bGU9Im5vbnplcm8iLz48cGF0aCBkPSJNNCAxMC43YTUuNCA1LjQgMCAwIDEgMC0zLjRWNUgxYTkgOSAwIDAgMCAwIDhsMy0yLjN6IiBmaWxsPSIjRkJCQzA1IiBmaWxsLXJ1bGU9Im5vbnplcm8iLz48cGF0aCBkPSJNOTMgMy42YzEuMyAwIDIuNS40IDMuNCAxLjNMMTUgMi4zQTkgOSAwIDAgMCAxIDVsMyAyLjRhNS40IDUuNCAwIDAgMSA1LTMuN3oiIGZpbGw9IiNFQTQzMzUiIGZpbGwtcnVsZT0ibm9uemVybyIvPjxwYXRoIGQ9Ik0wIDBoMTh2MThIMHoiLz48L2c+PC9zdmc+" alt="Google">
+            </div>
+            <div class="social-btn" id="github-register">
+              <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTgiIGhlaWdodD0iMTgiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZmlsbD0iIzIzMUYyMCIgZD0iTTcuOTk5IDBDMy41ODIgMCAwIDMuNTg0IDAgOC4wMDFjMCAzLjU0IDIuMjk2IDYuNTQ3IDUuNDc3IDcuNTk1LjQuMDc1LjU0OC0uMTc1LjU0OC0uMzg1IDAtLjE5LS4wMDctLjgyOC0uMDExLTEuNTktMi4yMjYuNDg2LTIuNzA1LTEuMDctMi43MDUtMS4wNy0uMzY1LS45MjUtLjg5LTEuMTctLjg5LTEuMTctLjcyOC0uNS4wNTUtLjQ5LjA1NS0uNDkuNzIuMDU1IDEuMTA1LjczOCAxLjEwNS43MzguNzE1IDEuMjI1IDEuODc1Ljg3IDIuMzI1LjY2NS4wNzUtLjUyNS4yOC0uODcuNTA1LTEuMDctMS43NzUtLjItMy42NS0uODktMy42NS0zLjk1IDAtLjg3NS4zMS0xLjU5LjgyNS0yLjE1LS4wOC0uMi0uMzYtMS4wMi4wNzUtMi4xMiAwIDAgLjY3NS0uMjE1IDIuMi44Mi42NC0uMTggMS4zLS4yNyAyLS4yNy43IDAgMS40LjA5IDIuMDA1LjI3IDEuNTI1LTEuMDM1IDIuMTc1LS44MiAyLjE3NS0uODIuNDQgMS4xLjE1NSAxLjkyLjA3NSAyLjEyLjUxNS41Ni44MiAxLjI3NS44MiAyLjE1IDAgMy4wNzUtMS44NzUgMy44NS0zLjY1IDMuOTUuMjguMjUuNTQuNzUuNTQgMS41MiAwIDEuMS0uMDEgMS45OC0uMDEgMi4yNSAwIC4yMS4xNDUuQTEuMDAxIDEuMDAxIDAgMCAwIDE2IDguMDAxQzE2IDMuNTg0IDEyLjQxOCAwIDcuOTk5IDB6Ii8+PC9zdmc+" alt="GitHub">
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="panels-container">
+      <div class="panel left-panel">
+        <div class="content">
+          <h3>Novo por aqui?</h3>
+          <p>
+            Conheça a State Software.
+            Experimente uma semana grátis, sem pagar nada!
+          </p>
+          <button class="btn transparent" id="sign-up-btn">
+            Cadastrar
+          </button>
+        </div>
+        <img src="img/ignite2.png" class="image" alt="Ilustração de login" />
+      </div>
+      <div class="panel right-panel">
+        <div class="content">
+          <h3>Já tem uma conta?</h3>
+          <p>
+            Faça login para acessar todos os recursos da nossa plataforma.
+          </p>
+          <button class="btn transparent" id="sign-in-btn">
+            Entrar
+          </button>
+        </div>
+        <img src="img/ignite2.png" class="image" alt="Ilustração de cadastro" />
+      </div>
+    </div>
+  </div>
+ 
+  <script>
+      // Configuração do Supabase
+      const supabaseUrl = 'https://qgnqztsxfeugopuhyioq.supabase.co';
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFnbnF6dHN4ZmV1Z29wdWh5aW9xIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc1MTg4MjEsImV4cCI6MjA3MzA5NDgyMX0.mW88-7P_Af3WMVAUT7ha4Mf0nyKJoSiNjMfuXiCllIA';
+    const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+    // Elementos DOM
+    const sign_in_btn = document.querySelector("#sign-in-btn");
+    const sign_up_btn = document.querySelector("#sign-up-btn");
+    const container = document.querySelector(".container");
+    const loginForm = document.getElementById("login-form");
+    const registerForm = document.getElementById("register-form");
+    const googleLoginBtn = document.getElementById("google-login");
+    const githubLoginBtn = document.getElementById("github-login");
+    const googleRegisterBtn = document.getElementById("google-register");
+    const githubRegisterBtn = document.getElementById("github-register");
+
+    // Alternar entre login e cadastro
+    sign_up_btn.addEventListener("click", () => {
+      container.classList.add("sign-up-mode");
+    });
+
+    sign_in_btn.addEventListener("click", () => {
+      container.classList.remove("sign-up-mode");
+    });
+
+    // Função para exibir mensagens
+    function showMessage(icon, title, text) {
+      Swal.fire({
+        icon: icon,
+        title: title,
+        text: text,
+        timer: 3000,
+        showConfirmButton: false
+      });
+    }
+
+    // Login com email e senha
+    loginForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      
+      const email = document.getElementById("login-email").value;
+      const password = document.getElementById("login-password").value;
+      
+      try {
+        const { data, error } = await supabase.auth.signInWithPassword({
+          email: email,
+          password: password
+        });
+        
+        if (error) {
+          // Verifica se é um erro de usuário não confirmado
+          if (error.message.includes("Email not confirmed")) {
+            showMessage('info', 'Email não confirmado', 'Por favor, verifique seu email para confirmar sua conta antes de fazer login.');
+          } else {
+            throw error;
+          }
+        } else {
+          showMessage('success', 'Sucesso!', 'Login realizado com sucesso.');
+          setTimeout(() => {
+            window.location.href = "admin.html";
+          }, 1500);
+        }
+      } catch (error) {
+        showMessage('error', 'Erro no login', error.message);
+      }
+    });
+
+    // Cadastro com email e senha
+    registerForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      
+      const name = document.getElementById("register-name").value;
+      const email = document.getElementById("register-email").value;
+      const password = document.getElementById("register-password").value;
+      
+      // Validação básica
+      if (password.length < 6) {
+        showMessage('error', 'Senha muito curta', 'A senha deve ter pelo menos 6 caracteres.');
+        return;
+      }
+      
+      try {
+        const { data, error } = await supabase.auth.signUp({
+          email: email,
+          password: password,
+          options: {
+            data: {
+              full_name: name
+            },
+            emailRedirectTo: window.location.origin // Para redirecionamento após confirmação
+          }
+        });
+        
+        if (error) throw error;
+        
+        showMessage('success', 'Sucesso!', 'Cadastro realizado. Verifique seu email para confirmação.');
+        registerForm.reset();
+        container.classList.remove("sign-up-mode");
+      } catch (error) {
+        showMessage('error', 'Erro no cadastro', error.message);
+      }
+    });
+
+    // Login com Google
+    const handleGoogleLogin = async () => {
+      try {
+        const { data, error } = await supabase.auth.signInWithOAuth({
+          provider: 'google',
+          options: {
+            redirectTo: window.location.origin // Para redirecionamento após login
+          }
+        });
+        
+        if (error) throw error;
+      } catch (error) {
+        showMessage('error', 'Erro no login com Google', error.message);
+      }
+    };
+
+    // Login com GitHub
+    const handleGithubLogin = async () => {
+      try {
+        const { data, error } = await supabase.auth.signInWithOAuth({
+          provider: 'github',
+          options: {
+            redirectTo: window.location.origin // Para redirecionamento após login
+          }
+        });
+        
+        if (error) throw error;
+      } catch (error) {
+        showMessage('error', 'Erro no login com GitHub', error.message);
+      }
+    };
+
+    // Adicionar event listeners para login social
+    googleLoginBtn.addEventListener("click", handleGoogleLogin);
+    githubLoginBtn.addEventListener("click", handleGithubLogin);
+    googleRegisterBtn.addEventListener("click", handleGoogleLogin);
+    githubRegisterBtn.addEventListener("click", handleGithubLogin);
+
+  
+  </script>
+
+  <script src="js/auth.js"></script>
+ 
+</body>
+</html>

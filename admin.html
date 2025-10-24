@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <link rel="manifest" href="manifest.json">
+    <title>Painel Admin - Romanos Store</title>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+    <div class="admin-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="brand-logo">
+                    <span>R8:28</span>
+                </div>
+                <div class="brand-text">
+                    <h1>ROMANOS</h1>
+                    <p>Painel Admin</p>
+                </div>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <a href="index.html" class="nav-item">
+                    <i class="fas fa-store nav-icon"></i>
+                    Voltar para Loja
+                </a>
+                <a href="#produtos" class="nav-item active">
+                    <i class="fas fa-tshirt nav-icon"></i>
+                    Gerenciar Produtos
+                </a>
+                <a href="#categorias" class="nav-item">
+                    <i class="fas fa-tags nav-icon"></i>
+                    Categorias
+                </a>
+                <a href="#pedidos" class="nav-item">
+                    <i class="fas fa-shopping-bag nav-icon"></i>
+                    Pedidos
+                </a>
+                <a href="#clientes" class="nav-item">
+                    <i class="fas fa-users nav-icon"></i>
+                    Clientes
+                </a>
+                <a href="#relatorios" class="nav-item">
+                    <i class="fas fa-chart-bar nav-icon"></i>
+                    Relatórios
+                </a>
+                <a href="#configuracoes" class="nav-item">
+                    <i class="fas fa-cog nav-icon"></i>
+                    Configurações
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="main-header">
+                <div class="header-content">
+                    <button class="menu-toggle" id="menu-toggle">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <h1 class="page-title">Gerenciar Produtos</h1>
+                    <div class="user-menu">
+                        <span class="user-name">Administrador</span>
+                        <div class="user-avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Stats Cards -->
+            <section class="stats-grid">
+                <div class="stat-card blue">
+                    <div class="stat-content">
+                        <div class="stat-icon">
+                            <i class="fas fa-tshirt"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>Total Produtos</h3>
+                            <p class="stat-value" id="total-products">0</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="stat-card green">
+                    <div class="stat-content">
+                        <div class="stat-icon">
+                            <i class="fas fa-box"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>Em Estoque</h3>
+                            <p class="stat-value" id="in-stock-products">0</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="stat-card purple">
+                    <div class="stat-content">
+                        <div class="stat-icon">
+                            <i class="fas fa-tags"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>Categorias</h3>
+                            <p class="stat-value" id="total-categories">4</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="stat-card orange">
+                    <div class="stat-content">
+                        <div class="stat-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>Valor Estoque</h3>
+                            <p class="stat-value" id="stock-value">R$ 0,00</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Controls Section -->
+            <section class="content-section">
+                <div class="section-header">
+                    <h2 class="section-title">Controles</h2>
+                    <div class="controls-flex">
+                        <button id="export-csv" class="btn btn-secondary">
+                            <i class="fas fa-download"></i> CSV
+                        </button>
+                        <button id="export-json" class="btn btn-secondary">
+                            <i class="fas fa-download"></i> JSON
+                        </button>
+                        <button id="manual-backup" class="btn btn-secondary">
+                            <i class="fas fa-save"></i> Backup
+                        </button>
+                        <button id="add-product-btn" class="btn btn-primary">
+                            <i class="fas fa-plus"></i> Adicionar Produto
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Search and Filters -->
+                <div class="filters-section">
+                    <div class="filters-grid">
+                        <div class="form-group">
+                            <label for="search-products" class="form-label">Buscar Produto</label>
+                            <div class="search-container">
+                                <input type="text" id="search-products" class="form-input search-input" placeholder="Digite o nome do produto...">
+                                <i class="fas fa-search search-icon"></i>
+                                <button id="clear-search" class="clear-search-btn">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="category-filter" class="form-label">Filtrar por Categoria</label>
+                            <select id="category-filter" class="form-select">
+                                <option value="">Todas as categorias</option>
+                                <option value="masculino">Masculino</option>
+                                <option value="feminino">Feminino</option>
+                                <option value="infantil">Infantil</option>
+                                <option value="acessorios">Acessórios</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="status-filter" class="form-label">Filtrar por Status</label>
+                            <select id="status-filter" class="form-select">
+                                <option value="">Todos os status</option>
+                                <option value="active">Ativo</option>
+                                <option value="inactive">Inativo</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="filters-footer">
+                        <span id="products-count" class="products-count">0 produtos encontrados</span>
+                        <button id="clear-filters" class="btn btn-secondary">
+                            <i class="fas fa-times"></i> Limpar Filtros
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Products Grid -->
+            <section class="content-section">
+                <div class="section-header">
+                    <h2 class="section-title">Produtos</h2>
+                </div>
+
+                <!-- Loading State -->
+                <div id="loading-products" class="loading-state">
+                    <div class="loading-spinner large"></div>
+                    <p class="loading-text">Carregando produtos...</p>
+                </div>
+
+                <!-- Empty State -->
+                <div id="empty-products" class="empty-state hidden">
+                    <i class="fas fa-tshirt empty-icon"></i>
+                    <h3 class="empty-title">Nenhum produto encontrado</h3>
+                    <p class="empty-description">Clique em "Adicionar Produto" para começar</p>
+                    <button id="add-first-product" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Adicionar Primeiro Produto
+                    </button>
+                </div>
+
+                <!-- Products Grid -->
+                <div id="products-grid" class="products-grid">
+                    <!-- Products will be loaded here dynamically -->
+                </div>
+
+                <!-- Pagination -->
+                <div id="pagination-controls" class="pagination-container hidden">
+                    <!-- Pagination will be loaded here -->
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Debug Panel -->
+    <div id="debug-panel" class="debug-panel">
+        <div class="debug-header">
+            <strong>Debug Console</strong>
+            <div class="debug-actions">
+                <button id="toggle-debug" class="debug-btn">Toggle</button>
+                <button id="clear-debug" class="debug-btn">Limpar</button>
+            </div>
+        </div>
+        <div id="debug-content" class="debug-content">Sistema inicializado...</div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/admin-products.js"></script>
+
+  <script src="js/auth.js"></script>
+</body>
+</html>
